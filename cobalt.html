@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <title>Identificarea cationului Co²⁺</title>
+  <style>
+    body {
+      background: #121515;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      margin: 10px;
+      padding-bottom: 200px;
+    }
+
+    h1, h3 {
+      color: #cecece;
+      margin-bottom: 0.5em;
+    }
+
+    .reaction-block {
+      margin-bottom: 100px;
+    }
+
+    .lab {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 60px;
+      margin-top: 40px;
+    }
+
+    .label {
+      color: #cecece;
+      margin-top: 8px;
+      font-weight: 500;
+      font-size: 16px;
+    }
+
+    .berzelius, .eprubeta {
+      position: relative;
+      width: 100px;
+      height: 200px;
+      border: 4px solid #cecece;
+      border-top: none;
+      border-radius: 0 0 50px 50px;
+      overflow: hidden;
+      background: #121515;
+      cursor: pointer;
+    }
+
+    .eprubeta {
+      width: 60px;
+      height: 250px;
+      border-radius: 0 0 30px 30px;
+      cursor: default;
+    }
+
+    .toarna {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 0;
+      background: #121515;
+      z-index: 5;
+      transition: height 1s ease;
+    }
+
+    .precipitat, .solutie_rezultata {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      transition: height 1s ease;
+    }
+
+    .solutie_rezultata {
+      height: 0;
+      background: #212525;
+      z-index: 1;
+    }
+
+    .precipitat {
+      height: 0;
+      z-index: 2;
+    }
+
+    .co_nitrat { background: #6e2843; height: 100%; }
+    .naoh { background: #212525; height: 100%; }
+    .amoniu_sulf { background: #212525; height: 100%; }
+    .reactiv { background: #eb4402; height: 100%; }
+
+    .click-circle {
+      position: absolute;
+      top: 65%;
+      left: 50%;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(0, 200, 255, 0.3);
+      transform: translate(-50%, -50%) scale(1);
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 10;
+    }
+
+    .click-circle.visible {
+      opacity: 1;
+      pointer-events: auto;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.2;
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.3);
+        opacity: 0.5;
+      }
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal img {
+      max-width: 80%;
+      max-height: 80%;
+      border-radius: 8px;
+      box-shadow: 0 0 20px white;
+    }
+
+    .modal button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 20px;
+      line-height: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Identificarea cationului Co²⁺</h1>
+
+  <!-- Reaction 1 -->
+  <div class="reaction-block">
+    <h3>Reacția cu ionii OH⁻ (NaOH)</h3>
+    <div class="lab">
+      <div>
+        <div class="berzelius" id="co1">
+          <div class="co_nitrat"></div>
+          <div class="toarna" id="pour1a"></div>
+        </div>
+        <div class="label">CoCl₂</div>
+      </div>
+
+      <div class="eprubeta">
+        <div class="precipitat" id="precip1" style="background:#4428e0;"></div>
+        <div class="solutie_rezultata" id="sol1"></div>
+        <div class="click-circle" id="circle1"></div>
+      </div>
+
+      <div>
+        <div class="berzelius" id="naoh1">
+          <div class="naoh"></div>
+          <div class="toarna" id="pour1b"></div>
+        </div>
+        <div class="label">NaOH</div>
+      </div>
+    </div>
+    <h3>CoCl₂ + 2NaOH → Co(OH)₂ ↓ + 2NaCl</h3>
+  </div>
+
+  <!-- Reaction 2 -->
+  <div class="reaction-block">
+    <h3>Reacția cu sulful (S²⁻) din (NH₄)₂S</h3>
+    <div class="lab">
+      <div>
+        <div class="berzelius" id="co2">
+          <div class="co_nitrat"></div>
+          <div class="toarna" id="pour2a"></div>
+        </div>
+        <div class="label">CoCl₂</div>
+      </div>
+
+      <div class="eprubeta">
+        <div class="precipitat" id="precip2" style="background:#000;"></div>
+        <div class="solutie_rezultata" id="sol2"></div>
+        <div class="click-circle" id="circle2"></div>
+      </div>
+
+      <div>
+        <div class="berzelius" id="sulf2">
+          <div class="amoniu_sulf"></div>
+          <div class="toarna" id="pour2b"></div>
+        </div>
+        <div class="label">(NH₄)₂S</div>
+      </div>
+    </div>
+    <h3>CoCl₂ + (NH₄)₂S → CoS ↓ + 2NH₄Cl</h3>
+  </div>
+
+  <!-- Reaction 3 -->
+  <div class="reaction-block">
+    <h3>Reacția cu ionii [Fe(CN)₆]⁴⁻</h3>
+    <div class="lab">
+      <div>
+        <div class="berzelius" id="co3">
+          <div class="co_nitrat"></div>
+          <div class="toarna" id="pour3a"></div>
+        </div>
+        <div class="label">CoCl₂</div>
+      </div>
+
+      <div class="eprubeta">
+        <div class="precipitat" id="precip3" style="background: #3a9d8f;"></div>
+        <div class="solutie_rezultata" id="sol3"></div>
+        <div class="click-circle" id="circle3"></div>
+      </div>
+
+      <div>
+        <div class="berzelius" id="ferocianura">
+          <div class="reactiv"></div>
+          <div class="toarna" id="pour3b"></div>
+        </div>
+        <div class="label">K₄[Fe(CN)₆]</div>
+      </div>
+    </div>
+    <h3>2CoCl₂ + K₄[Fe(CN)₆] → Co₂[Fe(CN)₆] ↓ + 4KCl</h3>
+  </div>
+
+  <!-- Modals -->
+  <div class="modal" id="modal1">
+    <div>
+      <img src="https://woelen.homescience.net/science/chem/solutions/coIIoh-1.jpg" alt="Co(OH)₂" />
+      <button onclick="document.getElementById('modal1').classList.remove('active')">×</button>
+    </div>
+  </div>
+  <div class="modal" id="modal2">
+    <div>
+      <img src="https://i.ibb.co/pjpNnKgh/cos.jpg" alt="CoS" />
+      <button onclick="document.getElementById('modal2').classList.remove('active')">×</button>
+    </div>
+  </div>
+  <div class="modal" id="modal3">
+    <div>
+      <img src="https://i.postimg.cc/Kvfxdkwf/ferocianura-cobalt.jpg" alt="Co₂[Fe(CN)₆]" />
+      <button onclick="document.getElementById('modal3').classList.remove('active')">×</button>
+    </div>
+  </div>
+
+  <script>
+    // Reacția 1
+    let added1a = false, added1b = false;
+    document.getElementById('co1').onclick = () => {
+      if (added1a) return;
+      document.getElementById('pour1a').style.height = '100px';
+      setTimeout(() => {
+        document.getElementById('sol1').style.height = '40%';
+        added1a = true;
+        check1();
+      }, 1000);
+    };
+    document.getElementById('naoh1').onclick = () => {
+      if (added1b) return;
+      document.getElementById('pour1b').style.height = '100px';
+      setTimeout(() => {
+        document.getElementById('sol1').style.height = '60%';
+        added1b = true;
+        check1();
+      }, 1000);
+    };
+    function check1() {
+      if (added1a && added1b) {
+        setTimeout(() => {
+          document.getElementById('precip1').style.height = '20%';
+          document.getElementById('sol1').style.background = '#e09dd1';
+          document.getElementById('circle1').classList.add('visible');
+        }, 800);
+      }
+    }
+
+    // Reacția 2
+    let added2a = false, added2b = false;
+    document.getElementById('co2').onclick = () => {
+      if (added2a) return;
+      document.getElementById('pour2a').style.height = '100px';
+      setTimeout(() => {
+        document.getElementById('sol2').style.height = '40%';
+        added2a = true;
+        check2();
+      }, 1000);
+    };
+    document.getElementById('sulf2').onclick = () => {
+      if (added2b) return;
+      document.getElementById('pour2b').style.height = '100px';
+      setTimeout(() => {
+        document.getElementById('sol2').style.height = '60%';
+        added2b = true;
+        check2();
+      }, 1000);
+    };
+    function check2() {
+      if (added2a && added2b) {
+        setTimeout(() => {
+          document.getElementById('precip2').style.height = '20%';
+          document.getElementById('circle2').classList.add('visible');
+        }, 800);
+      }
+    }
+
+    // Reacția 3
+    let added3a = false, added3b = false;
+    document.getElementById('co3').onclick = () => {
+      if (added3a) return;
+      document.getElementById('pour3a').style.height = '100px';
+      setTimeout(() => {
+        document.getElementById('sol3').style.height = '40%';
+        added3a = true;
+        check3();
+      }, 1000);
+    };
+    document.getElementById('ferocianura').onclick = () => {
+      if (added3b) return;
+      document.getElementById('pour3b').style.height = '100px';
+      setTimeout(() => {
+        document.getElementById('sol3').style.height = '60%';
+        added3b = true;
+        check3();
+      }, 1000);
+    };
+    function check3() {
+      if (added3a && added3b) {
+        setTimeout(() => {
+          document.getElementById('precip3').style.height = '20%';
+          document.getElementById('sol3').style.background = '#bddbd6';
+          document.getElementById('circle3').classList.add('visible');
+        }, 800);
+      }
+    }
+
+    // Modals
+    document.getElementById('circle1').onclick = () => document.getElementById('modal1').classList.add('active');
+    document.getElementById('circle2').onclick = () => document.getElementById('modal2').classList.add('active');
+    document.getElementById('circle3').onclick = () => document.getElementById('modal3').classList.add('active');
+  </script>
+</body>
+</html>
